@@ -20,8 +20,22 @@ Creature = Class { __includes = GameObject,
 
     self.filename = ""
     self.density = .1
+
+    self.rng = love.math.newRandomGenerator(self:getNumericalString(self.name..self.index..os.time()))
+    self.rng:random()
   end
 }
+
+function Creature:getNumericalString(str)
+  local ans = 0
+
+  for i = 1, #str do
+    local char = str:sub(i,i)
+    ans = ans + string.byte(char)
+  end
+
+  return ans
+end
 
 function Creature:draw()
     love.graphics.setColor(255, 255, 255, 255)
@@ -32,7 +46,7 @@ function Creature:draw()
       love.graphics.draw(self.image, self.body:getX(), self.body:getY(), self.body:getAngle(), 1, 1, self.width / 2.0, self.height / 2.0)
     end
 
-    isShowingBounds = true
+    isShowingBounds = false
 
     --print out the bounding area for the shape
     if isShowingBounds then
@@ -51,20 +65,20 @@ function Creature:update(dt)
   if randomNum < .5 then
     -- move the creature
     local direction = self.rng:random()
-    local force = 10000
+    local force = Vector(500, 200)
 
     if direction < .25 then
       --self.pos.x = self.pos.x - METER_HEIGHT
-      self.body:applyForce(-1.0 * force, 0)
+      self.body:applyForce(-1.0 * force.x, 0)
     elseif direction < .5 then
       --self.pos.x = self.pos.x + METER_HEIGHT
-      self.body:applyForce(force, 0)
+      self.body:applyForce(force.x, 0)
     elseif direction < .75 then
       --self.pos.y = self.pos.y - METER_HEIGHT
-      self.body:applyForce(0, -1.0 * force)
+      self.body:applyForce(0, -1.0 * force.y)
     else
       --self.pos.y = self.pos.y + METER_HEIGHT
-      self.body:applyForce(0, force)
+      self.body:applyForce(0, 1.0 * force.y)
     end
 
   elseif randomNum > .9 then

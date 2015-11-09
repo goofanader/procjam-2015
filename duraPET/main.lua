@@ -46,13 +46,16 @@ function love.load()
   }
 
   imageIndex = rng:random(#startingShapes)
-  print(imageIndex)
+  --print(imageIndex)
   startingShapeData = love.image.newImageData(startingShapes[imageIndex])
   --print(startingShapeData:getString())
   creatureImage = love.graphics.newImage(startingShapeData)
 
-  gameObjects.creature = Creature("Creature", creatureImage:getWidth(), creatureImage:getHeight(), (WINDOW_WIDTH / 2), (WINDOW_HEIGHT / 2))
-  gameObjects.creature:setImageData(world, startingShapeData, startingShapes[imageIndex])
+  for index, filename in ipairs(startingShapes) do
+    startingShapeData = love.image.newImageData(startingShapes[index])
+    gameObjects["Creature"..index] = Creature("Creature"..index, creatureImage:getWidth(), creatureImage:getHeight(), (WINDOW_WIDTH / 2) + index * 10, (WINDOW_HEIGHT / 2) + index * 10)
+    gameObjects["Creature"..index]:setImageData(world, startingShapeData, --[[startingShapes[imageIndex] ]]filename)
+  end
 
   love.graphics.setBackgroundColor(unpack(GB_COLORS[BG_COLOR]))
   love.graphics.setDefaultFilter("nearest", "nearest")
