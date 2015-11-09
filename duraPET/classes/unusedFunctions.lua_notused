@@ -1,0 +1,120 @@
+--[[
+  This is for Creature.lua.
+]]
+
+-- builds the shape of the creature's main body. Does not account for holes in the creature's shape, but it will handle multiple, separate shapes.
+function Creature:buildShape(world)
+  -- create a body first, and then add shape fixtures to it
+  if self.body == nil then
+    self.body = love.physics.newBody(world, self.pos.x, self.pos.y, "dynamic")
+  end
+
+  -- algorithm:
+  -- first, search along the y until you find a pixel that has alpha in it.
+  -- then, new loop: check left, right, down, and the angles, and find the next point to investigate.
+    -- if the slope is different from the previous two points, add a new vertices
+    -- otherwise, replace the old vertex with this new one
+
+  local shapes = {}
+
+  for i = 0, self.imageData:getWidth() - 1 do
+    for j = 0, self.imageData:getHeight() - 1 do
+      local isIgnoring = false
+
+      -- check that the point isn't in a shape we've already made
+      for index, shape in ipairs(shapes) do
+        if shape:testPoint(0, 0, 0, i, j) then
+          isIgnoring = true
+          break
+        end
+      end
+
+      if not isIgnoring and self.imageArray[i][j][ALPHA] > 0 then
+        --LET'S BEGIN A LOOP
+        local startingVertex = Vector(i, j)
+        local vertices = {startingVertex}
+        local startingLineVertex = Vector(i, j)
+        local lastVertex = Vector(i, j)
+        local currentShape = nil
+        local isChecking = true
+        local checkedVertices = {startingVertex}
+
+        while lastVertex ~= startingVertex and isChecking do
+          -- check below first, then check in a counter-clockwise fashion
+          local currentVertex = Vector(lastVertex:unpack())
+          local directions = {
+            currentVertex + Vector(0,1),
+            currentVertex + Vector(1,1),
+            currentVertex + Vector(1, 0),
+            currentVertex + Vector(1, -1),
+            currentVertex + Vector(0, -1),
+            currentVertex + Vector(-1, -1),
+            currentVertex + Vector(-1, 0),
+            currentVertex + Vector(-1, 1)
+          }
+
+          local pickedVertex = nil
+
+          for i = 1, #directions do
+            local currDir = directions[i]
+
+            if currDir.x > -1 and currDir.x < self.imageData:getWidth() and currDir.y > -1 and currDir.y < self.imageData:getHeight() and self.imageArray[currDir.x][currDir.y][ALPHA] > 0 then
+              if currentShape then
+                if not currentShape:testPoint(0,0,0, currDir:unpack()) and self:hasOneEmptyNeighbor(currDir:unpack()) then
+                  -- it's a valid vertex to add. Check the slope between the two points though
+                  if lastVertex ~= startingLineVertex and self:getSlope(currDir, startingLineVertex) ~= self:getSlope(lastVertex, startingLineVertex) then
+                    -- check if the vertex is the starting one, though...
+                    -- a new vertex to add!
+                    table.insert(vertices, currDir)
+                    lastVertex = currDir
+                    startingLineVertex = currDir
+                  elseif lastVertex == startingLineVertex then
+                    lastVertex = currDir
+                  end
+
+                  pickedVertex = currDir
+                  break
+                end
+              elseif not currentShape and self:hasOneEmptyNeighbor(currDir:unpack()) then
+                pickedVertex = currDir
+              end
+            end
+          end
+
+          if pickedVertex == nil then
+            isChecking = false
+          end
+        end
+        --table.insert(shapes, currentShape)
+      end
+    end
+  end
+end
+
+function Creature:hasOneEmptyNeighbor(x, y)
+  local currentVertex = Vector(x, y)
+  local directions = {
+    currentVertex + Vector(0,1),
+    currentVertex + Vector(1,1),
+    currentVertex + Vector(1, 0),
+    currentVertex + Vector(1, -1),
+    currentVertex + Vector(0, -1),
+    currentVertex + Vector(-1, -1),
+    currentVertex + Vector(-1, 0),
+    currentVertex + Vector(-1, 1)
+  }
+
+  for i = 1, #directions do
+    local currDir = directions[i]
+
+    if currDir.x > -1 and currDir.x < self.imageData:getWidth() and currDir.y > -1 and currDir.y < self.imageData:getHeight() and self.imageArray[currDir.x][currDir.y][ALPHA] == 0 then
+      return true
+    end
+  end
+
+  return false
+end
+
+function Creature:getSlope(v1, v2)
+  return (v2.y - v1.y) / ((v2.x - v1.x) * 1.0)
+end
