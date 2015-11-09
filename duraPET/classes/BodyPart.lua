@@ -1,0 +1,7 @@
+-- holds a bodypart
+-- imagedata
+-- name of part
+-- isMirrored
+-- shape and body data
+-- who it's connected to ?? dunno about this one
+-- density

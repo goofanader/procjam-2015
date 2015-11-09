@@ -1,5 +1,7 @@
 # duraPET
-Version: 0.0.1 - There Is Nothing
+Version: 0.0.2 - There Is Something in the Works...
+
+![](https://github.com/goofanader/procjam-2015/blob/master/mediaImages/0.0.2_rabbits.gif)
 
 A virtual, evolving pet simulator created for [Procedural Generation Jam](http://itch.io/jam/procjam) 2015. Made with [LÖVE](http://love2d.org/).
 

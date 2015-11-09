@@ -53,7 +53,7 @@ function love.load()
 
   for index, filename in ipairs(startingShapes) do
     startingShapeData = love.image.newImageData(startingShapes[index])
-    gameObjects["Creature"..index] = Creature("Creature"..index, creatureImage:getWidth(), creatureImage:getHeight(), (WINDOW_WIDTH / 2) + index * 10, (WINDOW_HEIGHT / 2) + index * 10)
+    gameObjects["Creature"..index] = Creature("Creature"..index, creatureImage:getWidth(), creatureImage:getHeight(), (WINDOW_WIDTH / 2) + index * 10, (WINDOW_HEIGHT / 2) + index * 10, world)
     gameObjects["Creature"..index]:setImageData(world, startingShapeData, --[[startingShapes[imageIndex] ]]filename)
   end
 
