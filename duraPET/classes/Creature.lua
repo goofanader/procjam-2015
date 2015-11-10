@@ -1,7 +1,7 @@
 local Class = require "libraries/hump.class"
 local Vector = require "libraries/hump.vector"
 
-require "classes/GameObject"
+require "classes/Consumable"
 
 local bodyPartsList = {
   "head",
@@ -26,7 +26,7 @@ local ALPHA = 4
 local BODY = 1
 local SHAPE = 2
 
-Creature = Class { __includes = GameObject,
+Creature = Class { __includes = Consumable,
   init = function(self, name, width, height, x, y, world, body, shape, fixture, imageData, color, fillType)
     GameObject.init(self, name, width, height, x, y, body, shape, fixture, imageData, color, fillType)
 

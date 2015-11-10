@@ -4,6 +4,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Stateful play. There’s a starting screen to show it off.
+- You can reload the game screen to start a new run of three creatures.
+- There’s skeleton classes for body parts, consumables, and stats.
+- Press "q" to quit the simulator.
+
+### Changed
+- Creature is now a subclass of Consumable since creatures can be eaten by other creatures.
+
+### Removed
+- Almost all the love function calls in main. They've been replaced by states.
+
 ## [0.0.2] - 11/9/2015
 ### Added
 - All three creatures start off at the beginning.
