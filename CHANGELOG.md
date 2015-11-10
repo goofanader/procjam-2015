@@ -6,9 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Stateful play. There’s a starting screen to show it off.
-- You can reload the game screen to start a new run of three creatures.
+- You can reload the game screen with "r" to start a new run of three creatures.
 - There’s skeleton classes for body parts, consumables, and stats.
 - Press "q" to quit the simulator.
+
+### Fixed
+- Still working on it, but the mirrored heads center correctly now. ...I think?
+- Triangle's hitbox is centered properly.
 
 ### Changed
 - Creature is now a subclass of Consumable since creatures can be eaten by other creatures.

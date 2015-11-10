@@ -82,7 +82,7 @@ function Creature:draw()
 
   love.graphics.setColor(255, 255, 255, 255)
 
-  if self.filename:find("triangle") then
+  if false and self.filename:find("triangle") then
     love.graphics.draw(self.image, self.mouth:getX(), self.mouth:getY(), self.mouth:getAngle(), 1, 1)
   else
     love.graphics.draw(self.image, self.mouth:getX(), self.mouth:getY(), self.mouth:getAngle(), 1, 1, self.width / 2.0, self.height / 2.0)
@@ -165,10 +165,15 @@ function Creature:setImageData(world, imageData, filename)
   if filename:find("circle") then
     self.shape = love.physics.newCircleShape(self.width / 2.0)
   elseif filename:find("triangle") then
-    self.shape = love.physics.newPolygonShape({
+    --[[self.shape = love.physics.newPolygonShape({
       0, self.height,
       self.width / 2.0, 0,
       self.width, self.height
+    })]]
+    self.shape = love.physics.newPolygonShape({
+      self.width / -2.0, self.height / 2.0,
+      0, self.height / -2.0,
+      self.width / 2.0, self.height / 2.0
     })
   else
     self.shape = love.physics.newRectangleShape(self.width, self.height)
@@ -232,6 +237,7 @@ function Creature:headCreate()
 
       if not table.contains(vertices, newVertex) then
         table.insert(vertices, newVertex)
+        print("new vertex: "..tostring(newVertex))
       else
         i = i - 1
       end
@@ -240,15 +246,19 @@ function Creature:headCreate()
     if isMirrored then
       for i = #vertices, 1, -1 do
         local addVertex = Vector(headMaxDimensions.x, 0.0)
-        table.insert(vertices, addVertex - vertices[i])
+        table.insert(vertices, Vector(vertices[i].x * -1, vertices[i].y))
+        print("new vertex: "..tostring( Vector(vertices[i].x * -1, vertices[i].y)))
       end
     end
 
     -- set the vertices so that the vectors are unpacked
     local trueVertices = {}
+    local adjustVertices = Vector()--headMaxDimensions / 2.0
+    print("adjustVertices: "..tostring(adjustVertices))
     for i = 1, #vertices do
-      table.insert(trueVertices, vertices[i].x)
-      table.insert(trueVertices, vertices[i].y)
+      table.insert(trueVertices, vertices[i].x - adjustVertices.x)
+      table.insert(trueVertices, vertices[i].y - adjustVertices.y)
+      print(i..". "..tostring(vertices[i] - adjustVertices))
     end
 
     -- make the polygon shape
@@ -277,7 +287,7 @@ function Creature:headCreate()
   end
 
   local newHead = love.physics.newBody(self.world, x, y, "dynamic")
-  table.insert(self.fixtures, love.physics.newFixture(newHead, newHeadShape, .1))
+  table.insert(self.fixtures, love.physics.newFixture(newHead, newHeadShape, .05))
 
   love.physics.newWeldJoint(joinedBody, newHead, x, y)
 
