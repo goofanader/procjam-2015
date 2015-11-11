@@ -15,11 +15,12 @@ BodyPart = Class {
   index = 1,
   DEFAULT_DENSITY = .1,
 
-  init = function(self, name, shape, body, isMirrored, density)
+  init = function(self, name, shape, body, isMirrored, density, world)
     self.shape = shape or nil
     self.body = body or nil
     self.name = name or "BodyPart"..BodyPart.index
     self.id = BodyPart.index
+    self.world = world or nil
 
     self.isMirrored = nil
     if isMirrored == true or isMirrored == false then self.isMirrored = isMirrored end
@@ -34,5 +35,11 @@ BodyPart = Class {
     self.joints = {}
 
     BodyPart.index = BodyPart.index + 1
+
+    self.startPos = Vector()
+    if self.body then
+      self.startPos.x = self.body:getX()
+      self.startPos.y = self.body:getY()
+    end
   end
 }

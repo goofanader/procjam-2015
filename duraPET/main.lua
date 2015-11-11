@@ -5,7 +5,7 @@ local Class = require "libraries/hump.class"
 require "constants"
 require "classes/GameObject"
 require "classes/Creature"
-require "classes/BodyPart"
+require "classes/bodyParts/BodyPart"
 require "states/MenuMode"
 --require "states/GameMode"
 

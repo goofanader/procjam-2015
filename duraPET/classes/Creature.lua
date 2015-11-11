@@ -226,25 +226,28 @@ function Creature:headCreate()
 
   if not isCircle then
     local isMirrored = self.rng:random() < .9
+    print("Mirrored!")
     local numVertices = isMirrored and MAX_VERTICES / 2 or MAX_VERTICES
     numVertices = self.rng:random(3, numVertices) -- we don't ALWAYS want the max amount of vertices, so yeah. but can't be a line, either
 
     local maxDimensions = Vector(isMirrored and headMaxDimensions.x / 2 or headMaxDimensions.x, isMirrored and headMaxDimensions.y / 2 or headMaxDimensions.y)
 
     local vertices = {}
+    local prevX = -1
     for i = 1, numVertices do
-      local newVertex = Vector(self.rng:random(maxDimensions.x) - 1, self.rng:random(maxDimensions.y) - 1)
+      local newVertex = Vector(self.rng:random(prevX + 1, maxDimensions.x / (numVertices * 1.0) * i) - 1, self.rng:random(maxDimensions.y) - 1)
 
       if not table.contains(vertices, newVertex) then
         table.insert(vertices, newVertex)
         print("new vertex: "..tostring(newVertex))
+        prevX = newVertex.x
       else
         i = i - 1
       end
     end
 
     if isMirrored then
-      for i = #vertices, 1, -1 do
+      for i = 1, #vertices do
         local addVertex = Vector(headMaxDimensions.x, 0.0)
         table.insert(vertices, Vector(vertices[i].x * -1, vertices[i].y))
         print("new vertex: "..tostring( Vector(vertices[i].x * -1, vertices[i].y)))
